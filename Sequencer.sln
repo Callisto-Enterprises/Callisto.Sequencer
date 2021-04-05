@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.31129.286
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sequencer", "Sequencer\Sequencer.csproj", "{36E99ADE-963C-4EFA-8B62-7241D9DDFD88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SequencerIntegrationTests", "SequencerIntegrationTests\SequencerIntegrationTests.csproj", "{9300F0D1-A264-4102-ACA5-7AD1E625E54C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SequencerIntegrationTests", "SequencerIntegrationTests\SequencerIntegrationTests.csproj", "{9300F0D1-A264-4102-ACA5-7AD1E625E54C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{76D775B4-47A1-44F7-BD90-0FFEDA633DAD}"
+	ProjectSection(SolutionItems) = preProject
+		nuget.config = nuget.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
