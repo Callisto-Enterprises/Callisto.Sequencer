@@ -8,8 +8,8 @@ namespace Callisto.Sequencer.Services
 {
     public class SequencerTaskQueue : ISequencerTaskQueue
     {
-        private ConcurrentQueue<Func<CancellationToken, Task>> _workItems = new();
-        private SemaphoreSlim _signal = new(0);
+        private readonly ConcurrentQueue<Func<CancellationToken, Task>> _workItems = new();
+        private readonly SemaphoreSlim _signal = new(0);
 
         public void QueueBackgroundWorkItem(Func<CancellationToken, Task> workItem)
         {
