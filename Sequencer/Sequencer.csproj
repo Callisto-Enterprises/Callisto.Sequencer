@@ -10,7 +10,7 @@
 	  <PackageId>Callisto.Sequencer</PackageId>
 	  <Description>Simple Background Task Queue Service</Description>
 	  <AssemblyName>Callisto.Sequencer</AssemblyName>
-	  <Version>1.0.3</Version>
+	  <Version>2.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
