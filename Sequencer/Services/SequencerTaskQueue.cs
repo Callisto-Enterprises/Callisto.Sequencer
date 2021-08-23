@@ -24,7 +24,7 @@ namespace Callisto.Sequencer.Services
 
         public async Task<Func<CancellationToken, Task>> DequeueAsync(CancellationToken token)
         {
-            await _signal.WaitAsync();
+            await _signal.WaitAsync(token);
             _workItems.TryDequeue(out var workItem);
             return workItem;
         }

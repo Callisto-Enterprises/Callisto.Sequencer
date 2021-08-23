@@ -7,43 +7,63 @@ using System.Threading.Tasks;
 
 namespace Callisto.Sequencer.Services
 {
-    public class SequencerService : BackgroundService
+    public class SequencerService : IHostedService
     {
         private readonly ILogger<SequencerService> _logger;
         public ISequencerTaskQueue TaskQueue { get; }
+        private readonly Task[] _executors;
+        private readonly int _executorsCount = 1;
+        private CancellationTokenSource _tokenSource;
 
-        public SequencerService(ILogger<SequencerService> logger, ISequencerTaskQueue taskQueue)
+        public SequencerService(ILogger<SequencerService> logger, ISequencerTaskQueue taskQueue, int count)
         {
             _logger = logger;
             TaskQueue = taskQueue;
-        }
-        
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            _logger.LogInformation("Sequencer Service is running.");
-            await BackgroundProcessing(stoppingToken);
+            _executorsCount = count;
+            _executors = new Task[_executorsCount];
+            _logger.LogDebug($"Parallelism: {count}");
         }
 
-        private async Task BackgroundProcessing(CancellationToken stoppingToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            _logger.LogInformation("Parallel Service is starting.");
+            _tokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            for (int i = 0; i < _executorsCount; i++)
             {
-                var workItem = await TaskQueue.DequeueAsync(stoppingToken);
-                try
-                {
-                    await workItem(stoppingToken);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error occurred executing {WorkItem}.", nameof(workItem));
-                }
+                var executorTask = new Task(
+                    async () =>
+                    {
+                        while (!cancellationToken.IsCancellationRequested)
+                        {
+                            var workItem = await TaskQueue.DequeueAsync(cancellationToken);
+                            try
+                            {
+                                await workItem(cancellationToken);
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError(ex, "Error occurred executing {WorkItem}.", nameof(workItem));
+                            }
+                        }
+                    }, _tokenSource.Token);
+                _executors[i] = executorTask;
+                executorTask.Start();
             }
+
+            return Task.CompletedTask;
         }
 
-        public override Task StopAsync(CancellationToken stoppingToken)
+        public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Sequencer Service is stopping.");
-            return base.StopAsync(stoppingToken);
+            _logger.LogInformation("Parallel Service is stopping.");
+            _tokenSource.Cancel();
+
+            if (_executors != null)
+            {
+                Task.WaitAll(_executors, cancellationToken);
+            }
+
+            return Task.CompletedTask;
         }
     }
 }
