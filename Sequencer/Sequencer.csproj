@@ -4,9 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
 	  <LangVersion>9.0</LangVersion>
 	  <RootNamespace>Callisto.Sequencer</RootNamespace>
-	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-	  <Company>Callisto Enterprises LLC.</Company>
-	  <Authors>Callisto Enterprises LLC.</Authors>
+	  <Company>Callisto Enterprises</Company>
+	  <Authors></Authors>
 	  <PackageId>Callisto.Sequencer</PackageId>
 	  <Description>Simple Background Task Queue Service</Description>
 	  <AssemblyName>Callisto.Sequencer</AssemblyName>
